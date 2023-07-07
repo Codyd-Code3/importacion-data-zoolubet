@@ -1,0 +1,152 @@
+-> productos zoolubet
+
+campos a usar:
+-Nombre del Producto -->
+-(codigo del producto) Referencia interna -->
+-Referencia del producto -->
+-Responsable --> por defecto el usuario logueado
+-Etiquetas del producto --> 
+-Producto de venta -->
+-Unidad de Costo --> UoM de compra
+-Cantidad a Mano -->
+-Cantidad Proyectada -->
+-Unidad de Medida --> Unidades
+
+--------------------
+
+-codigo de barras
+-
+
+06-07-2023
+--------------------------------------------------------
+FORMATOS EN EXCEL                                       . CAMPOS DEL ODOO
+							.
+COLUMNAS	          COLUMNAS			.CAMPOS
+formato viejo  ----->     formato actualizado		.formato del odoo
+
+codigo producto  	  - codigo			.- referencia interna
+codigo barras    	  - codigo de barra		.- codigo barras
+descripcion producto      - descripcion			.- Nombre
+referencia producto       - referencia			.- Referencia Producto
+unidad de medida 	  - unidad			.- Unidad de Medida
+							*** crear columna de unidad de costo***
+............		  ............			.- Unidad de Costo
+							
+							*** crear una nueva columna y eliminar las originales***
+							*** Aqui hay que unir columnas en una sola y desechar las orig.**
+unidad referenciada-talla - unidad referenciada		.- descripcion (NOTAS INTERNAS) HAY QUE UNIR CON EMBALAJE
+emabalaje-diseño 	  - diseño			.- descripcion (NOTAS INTERNAS) HAY QUE UNIR CON UNIDAD REFER.
+							
+							*** crear una nueva columna y mantener las originales***
+							*** Aqui hay que unir columnas en una sola y mantener las orig.**
+descripcion del grupo     - grupo			.- categoria del producto (Categoria Padre) --> Modelo dif.
+codigo subgrupo  	  - sub-grupo			.- categoria del producto  (categoria hija) --> Modelo dif(nombre).
+
+codigo-linea     	  - ...........			.- ..........
+linea-color      	  - unidad de negocio o linea	.- Etiquetas de producto
+							
+							*** Aqui hay que asignarle ese formato que trae odoo para el % **
+tarifa iva       	  - %iva			.- Tarifa IVA (Impuestos del cliente)
+precio venta		  - ...........	(Ult precio)	.- .............
+costo producto sin iva    - ........... (Ult costo)	.- costo
+margen		 	  - ...........			.- .............
+nit provedor      	  - ...........			.- .............
+
+							*** se deben crear como contactos estos proovedores, y luego 								asociar los productos a traves del modulo de proovedores, 
+							de esta manera los relacionamos.
+							.- tipo de compañia
+nombre del proveedor      - proveedor			.- Nombre (Modelo de contactos)
+principio activo          - principio activo		.- Notas internas (Modelo de contactos)
+
+
+----------------------
+aparte
+entonces para hacer la relación a los proveedores hay que hacerla por medio del modelo product.supplierinfo
+esta relacion se hace solamente, 
+- importando en ese modelo, en Nombre del Producto --> el nombre del producto en el proveedor 
+- codigo del producto (Referencia interna) --> Plantilla del producto
+- Nombre del proveedor --> Proveedor
+
+
+-- 
+consideraciones: 
+--> aqui podria hacer una actualización de la información a través de la API, construir una aplicación que valide los productos que se encuentran en la aplicación 
+
+
+------------------------------------------------------------
+07-07-2023
+
+flujo de trabajo para importación de productos
+
+* importar productos ************************
+
+-> inicio el primer script para unir los productos y sacar la columna categoria padre e hijo - util para cuando vaya a importar los productos
+
+-> inicio el segundo script para sacar la descripcion del producto, que incluye la informacion de las columnas diseño, y unidad referenciada.
+
+-> inicio el tercer script para poder sacar en una nueva columna los porcentajes del iva formateados de acuerdo a como lo recibe odoo.
+Ya con el template generado aqui puedo importar los productos.
+pero es importante que antes de eso se realice el paso siguiente, en su modelo correspondiente.
+
+*importar categorias de los productos ***********************
+
+-> inicio el cuarto script para poder limpiar las columnas que tienen un grupo y un subgrupo diferente, y poder importar estas categorias en 'categorias de los productos', esta importacion se hace aparte de la importación del template del script 3. 
+
+bugs arreglar:
+- a las categorias de los productos los formatie para que no hayan valores con / y sin subgrupo --> OK
+- cambiar el campo UNIDAD por unidades, en la columna Ud Medida y Unidad de Costo, reemplace los valores de esas unidades-->OK
+- crear un nuevo archivo con una nueva columna en donde la referencia no tenga campos en blanco --> OK
+- crear un nuevo archivo que me permita sacar los valores en la referencia del producto que se está repitiendo
+(esto con el objetivo de poder separarlos) --> OK
+	* un script para poder sacar solamente estos codigos de referencia que se repitenen un excel
+	* un script para poder sacar la db que no contiene productos con esos codigos de referencia repetidos 
+
+
+-----------------------------------
+
+flujo de trabajo para importacion de productos
+
+* importar proovedores ------
+
+
+
+---------------
+07-07-2023 --> 4:50pm
+
+flujo final para uso de los scripts productos
+
+												Importacion modelos
+
+-> ejecuto 1_unir_categorias_productos.py para agregar la columna --> categoria padre-hijo      (MODELO PRODUCTOS)
+
+-> ejecuto 2_unir_descripcion.py para agregar la columna --> descripcion 			(MODELO PRODUCTOS)
+
+-> ejecuto 3_nuevo_formato_iva.py para agregar la columna --> nuevo iva				(MODELO PRODUCTOS)
+
+-> ejecuto 4_añadir_unidad_costo.py para agregar la columna --> Unidad de Costo			(MODELO PRODUCTOS)
+
+-> ejecuto 5_cambiar_etiqueta_unidad para agregar la columna --> Unidad de Medida		(MODELO PRODUCTOS)
+
+***hasta aqui se puede probar creando un solo script para que haga lo anterior en un solo archivo py
+--------------------------------------------------------------------
+
+-> ejecuto 6_eliminar_categorias_repetidas (eliminacion) --> categoria-producto-padre-unicas	(MODELO DE CATEGORIAS)
+
+--------------------------------------------------------------------
+
+-> ejecuto 7_referencia_producto_vacias.py --> Nueva referencia producto 				(MODELO DE PRODUCTOS)
+
+
+--------------------------------------------------------------------
+opcional:
+
+-> ejecuto 8_sacar_referencia_repetida (eliminacion).py --> referencia producto			(MODELO DE PRODUCTOS)
+
+----------------------------------------------------------------------
+campos no utilizados
+PERO IMPORTANTE EJECUTAR
+
+-> ejecuto 8_2_sin_referencias_repetidas.py --> dos campos: 'referencia producto - primera vez' Y 'referencia producto - segunda vez'											(MODELO DE PRODUCTOS)
+
+ 
+

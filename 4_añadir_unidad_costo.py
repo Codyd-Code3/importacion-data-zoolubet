@@ -1,40 +1,31 @@
 import csv
 
-# PROGRAMA USADO PARA CAMBIAR LA ETIQUETA DE IVAS
+# PROGRAMA USADO PARA AÑADIR LA ETIQUETA Unidades COLUMNA COSTO 
 
-# debo haber ejecutado el primer script python: 2_unir_descripcion.py
+# debo haber ejecutado el primer script python: 3_nuevo_formato_iva.py
+#07-07-2023
 
 # Abrir el archivo CSV original y crear un archivo nuevo
-with open('Producto_unir_Diseño_and_Unidad_referenciada.csv', 'r', encoding='utf-8') as archivo_original, open('nuevo_ivas.csv', 'w', newline='', encoding='utf-8') as archivo_nuevo:
+with open('3_nuevo_formato_iva.csv', 'r', encoding='utf-8') as archivo_original, open('4_añadir_unidad_costo.csv', 'w', newline='', encoding='utf-8') as archivo_nuevo:
         
     # Crear un objeto lector y escritor CSV
     lector_csv = csv.reader(archivo_original)
     escritor_csv = csv.writer(archivo_nuevo)
-    print(lector_csv)
+    #print(lector_csv)
 
     # Leer la cabecera del archivo CSV original
     cabecera = next(lector_csv)
 
     # Agregar el nombre de la nueva columna a la cabecera
-    cabecera.append('nuevo iva')
+    cabecera.append('Unidad de Costo')
 
     # Escribir la cabecera en el archivo nuevo
     escritor_csv.writerow(cabecera)
 
     for fila in lector_csv:
 
-        iva = []
-
-        if fila[11] == '19':
-            iva = ["IVA Ventas 19%"]
-
-        elif fila[11] == '5':
-            iva = ["IVA Ventas 5%"]
-        elif fila[11] == '0':
-            iva = ["sin iva"]
-
         # Mezclar las columnas que deseas combinar y agregarlas a la nueva fila
-        nueva_fila = fila + iva
+        nueva_fila = fila + ["Unidades"]
 
         # Escribir la nueva fila en el archivo nuevo
         escritor_csv.writerow(nueva_fila)
