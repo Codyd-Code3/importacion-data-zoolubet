@@ -150,3 +150,30 @@ PERO IMPORTANTE EJECUTAR
 
  
 
+------------------------------------------------------------------
+------------------------------------------------------------------
+
+IMPORTAR TERCEROS
+
+campos necesarios:
+
+- 109288323 --> numero de identificacion
+- NIT --> tipo de identificacion
+- descripcion --> nombre
+- ciudad --> ciudad
+- direccion --> direccion
+- email --> email
+- REGIMEN -> regimen fiscal (aqui hay que cambiar el formato para que lo reconozca como IVA)
+- telefono - telefono 1
+- nombre comercial -> nombre comercial
+lista de precios -> lista de precios
+direccion 
+
+
+
+
+
+
+
+
+
